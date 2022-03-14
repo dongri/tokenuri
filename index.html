@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>tokenURI</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.1/web3.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</head>
+<body>
+  <div class="content">
+    <h3 class="title is-3">GET tokenURI</h3>
+
+    <div class="field">
+      <label class="label">From OpenSea URL <small>(Optional)</small></label>
+      <div class="control">
+        <input class="input" type="text" placeholder="ex: https://opensea.io/assets/0x350b4cdd07cc5836e30086b993d27983465ec014/639" id="opensea-url">
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">↓</label>
+    </div>
+    <div class="field">
+      <label class="label">Token Address <small>(Required)</small></label>
+      <div class="control">
+        <input class="input" type="text" placeholder="ex: 0x350b4cdd07cc5836e30086b993d27983465ec014" id="token-address">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Token ID <small>(Required)</small></label>
+      <div class="control">
+        <input class="input" type="text" placeholder="ex: 639" id="token-id">
+      </div>
+    </div>
+
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-link" onclick="getTokenURI();">Get</button>
+      </div>
+    </div>
+
+    <div id="token-uri" style="font-size: 20px;"></div>
+  </div>
+
+  <script>
+    getWeb3 = async () => {
+      try {
+        let currentProvider = null
+        if (window.ethereum) {
+          await window.ethereum.enable()
+          currentProvider = window.ethereum
+        } else if (window.web3) {
+          currentProvider = window.web3.currentProvider
+        } else {
+          alert('No Metamask (or other Web3 Provider) installed')
+        }
+        if (currentProvider) {
+          const web3 = new Web3(currentProvider)
+          const chainId = await web3.eth.getChainId()
+          const accounts = (await web3.eth.getAccounts()) || web3.eth.accounts
+          const address = accounts[0]
+          return {web3, chainId, address}
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    getTokenURI = async () => {
+      try {
+        const erc721ABI = [{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"baseURI","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"isOwner","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"string","name":"tokenURI","type":"string"}],"name":"mintToken","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
+        const {web3, chainId, address} = await getWeb3()
+        const tokenAddress = document.getElementById('token-address').value
+        const tokenId = document.getElementById('token-id').value
+        const token = new web3.eth.Contract(erc721ABI, tokenAddress)
+        const tokenURI = await token.methods.tokenURI(tokenId).call()
+        document.getElementById('token-uri').innerHTML = tokenURI
+      } catch (e) {
+        document.getElementById('token-uri').innerHTML = e.message;
+      }
+    }
+
+    document.getElementById('opensea-url').addEventListener('change', async () => {
+      const openseaUrl = document.getElementById('opensea-url').value
+      const parts = openseaUrl.split('/');
+      parts.forEach((part, index) => {
+        if (part.startsWith('0x')) {
+          document.getElementById('token-address').value = part
+          document.getElementById('token-id').value = parts[index+1]
+          return
+        }
+      })
+    })
+  </script>
+  <style>
+    small {
+      font-size: 0.8em;
+      color: gray;
+    }
+    .content {
+      margin: 100px;
+    }
+    .title {
+      margin-top: 60px !important;
+      margin-bottom: 60px !important;
+    }
+  </style>
+</body>
+</html>
